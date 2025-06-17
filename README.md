@@ -1,5 +1,17 @@
 # edf-eeg-analyzer
 Utility for analyzing EEG EDF files
+
+## Usage
+
+Run the CLI to compute absolute power bands:
+
+```bash
+python analyze_edf.py <input.edf> [-o OUTPUT_DIR]
+```
+
+The optional `-o` flag sets the directory for the generated
+`absolute_power.csv` and `absolute_power.xlsx` files. By default the files are
+written to the current working directory.
 # EDF → Absolute‑Power Utility  
 *(technical & managerial specification)*  
 
