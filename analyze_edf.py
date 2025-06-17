@@ -16,6 +16,24 @@ BANDS = {
 }
 
 def compute_absolute_power(edf_path):
+    """Return per-channel absolute power for an EDF recording.
+
+    Parameters
+    ----------
+    edf_path : str or pathlib.Path
+        Path to the EDF file to analyze.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Table of absolute power values for each channel.
+
+    Notes
+    -----
+    Writes ``absolute_power.csv`` and ``absolute_power.xlsx`` to the
+    current working directory.
+    """
+
     raw = mne.io.read_raw_edf(edf_path, preload=True)
     
     # Resample to 256 Hz if necessary
@@ -57,7 +75,25 @@ def compute_absolute_power(edf_path):
     df.to_csv("absolute_power.csv", index=False)
     df.to_excel("absolute_power.xlsx", index=False)
     return df
-if __name__ == "__main__":
+
+
+def main(argv=None):
+    """Parse CLI arguments and run :func:`compute_absolute_power`.
+
+    Parameters
+    ----------
+    argv : list[str] | None, optional
+        Arguments to parse. Defaults to ``sys.argv[1:]``.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The DataFrame produced by :func:`compute_absolute_power`.
+
+    The CSV and XLSX files are written to the directory specified by
+    ``-o`` (default: current directory).
+    """
+
     parser = argparse.ArgumentParser(
         description="Compute absolute power bands from an EDF file"
     )
@@ -71,15 +107,18 @@ if __name__ == "__main__":
         default=".",
         help="Directory to write the CSV/XLSX results"
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    # ensure output directory exists and run in that context so the
-    # compute_absolute_power function writes files there
     output_dir = os.path.abspath(args.output_dir)
     os.makedirs(output_dir, exist_ok=True)
     cwd = os.getcwd()
     try:
         os.chdir(output_dir)
-        compute_absolute_power(args.edf_path)
+        df = compute_absolute_power(args.edf_path)
     finally:
         os.chdir(cwd)
+    return df
+
+
+if __name__ == "__main__":
+    main()
