@@ -1,7 +1,18 @@
 # edf-eeg-analyzer
 Utility for analyzing EEG EDF files
-# EDF → Absolute‑Power Utility  
-*(technical & managerial specification)*  
+# EDF → Absolute‑Power Utility
+*(technical & managerial specification)*
+
+## CLI Usage
+
+Run the analyzer from the command line:
+
+```bash
+python analyze_edf.py /path/to/recording.edf
+```
+
+The command creates `absolute_power.csv` and `absolute_power.xlsx` in the
+working directory.
 
 ---
 
