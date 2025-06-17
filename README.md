@@ -147,6 +147,19 @@ Mapping is pure post‑processing:
 - SciPy 1.12 > `scipy.signal.get_window`.
 
 ---
+## Development
+
+Install dependencies, run the unit tests, and check linting:
+
+```bash
+pip install -r requirements.txt
+pip install pytest flake8
+pytest
+flake8 .
+```
+
+`flake8` is configured via `.flake8` and should report fewer than six warnings.
+
 
 > **Hand‑off to Codex:**  
 > 1. Create the repo and commit `PROJECT_SPEC.md`.  
