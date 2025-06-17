@@ -10,6 +10,13 @@ Utility for analyzing EEG EDF files
 > **Deliver a tiny, self‑hosted web tool that lets any clinician or researcher drop an `.edf` EEG recording (256 Hz) into a browser window and immediately download a CSV/XLSX table of absolute power values – per channel, per band – along with an on‑screen preview.**
 
 There are no cloud APIs, licences, or proprietary binaries: everything runs in pure Python (MNE‑Python, NumPy, SciPy, Pandas, Streamlit).
+## Quickstart
+
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
 
 ---
 

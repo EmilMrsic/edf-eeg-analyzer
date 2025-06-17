@@ -54,5 +54,15 @@ def compute_absolute_power(edf_path):
     df.to_csv("absolute_power.csv", index=False)
     df.to_excel("absolute_power.xlsx", index=False)
     return df
+
+
 if __name__ == "__main__":
-    compute_absolute_power("/Users/emil/Desktop/map_1_020420250945_ec.edf")
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Compute absolute EEG band power from an EDF file",
+    )
+    parser.add_argument("edf_path", help="Path to EDF file")
+    args = parser.parse_args()
+
+    compute_absolute_power(args.edf_path)
