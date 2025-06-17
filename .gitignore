@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Data files
+*.csv
+*.xlsx
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs
+*.log
+
+# Virtual environments
+env/
+venv/
+ENV/
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# Test and coverage artifacts
+.pytest_cache/
+.tox/
+htmlcov/
+coverage.xml
+*.cover
+
