@@ -1,3 +1,6 @@
+import argparse
+import os
+
 import mne
 import numpy as np
 import pandas as pd
@@ -55,4 +58,28 @@ def compute_absolute_power(edf_path):
     df.to_excel("absolute_power.xlsx", index=False)
     return df
 if __name__ == "__main__":
-    compute_absolute_power("/Users/emil/Desktop/map_1_020420250945_ec.edf")
+    parser = argparse.ArgumentParser(
+        description="Compute absolute power bands from an EDF file"
+    )
+    parser.add_argument(
+        "edf_path",
+        help="Path to the input EDF file"
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        default=".",
+        help="Directory to write the CSV/XLSX results"
+    )
+    args = parser.parse_args()
+
+    # ensure output directory exists and run in that context so the
+    # compute_absolute_power function writes files there
+    output_dir = os.path.abspath(args.output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+    cwd = os.getcwd()
+    try:
+        os.chdir(output_dir)
+        compute_absolute_power(args.edf_path)
+    finally:
+        os.chdir(cwd)
