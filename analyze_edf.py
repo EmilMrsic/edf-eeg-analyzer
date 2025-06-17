@@ -54,5 +54,8 @@ def compute_absolute_power(edf_path):
     df.to_csv("absolute_power.csv", index=False)
     df.to_excel("absolute_power.xlsx", index=False)
     return df
+
+
 if __name__ == "__main__":
-    compute_absolute_power("/Users/emil/Desktop/map_1_020420250945_ec.edf")
+    # Example usage; replace with your EDF path
+    compute_absolute_power("path_to_file.edf")
