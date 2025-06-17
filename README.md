@@ -124,7 +124,6 @@ Mapping is pure post‑processing:
 - [ ] Streamlit workflow succeeds for `sample.edf` (to be committed under `tests/data/`).  
 - [ ] `pip install -r requirements.txt` works on clean Ubuntu GitHub Action.  
 - [ ] `flake8` < 6 warnings.  
-- [ ] README includes animated GIF or screenshot.
 
 ---
 
