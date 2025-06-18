@@ -1,18 +1,3 @@
-import io
-import os
-import tempfile
-import streamlit as st
-from analyze_edf import compute_absolute_power
-
-# Configuration
-# ``DEFAULT_EDF_PATH`` can point to an EDF file on disk that will be used
-# when no file is uploaded via the UI. This is primarily useful for
-# demonstrations or local testing of the app.
-DEFAULT_EDF_PATH = os.environ.get("DEFAULT_EDF_PATH")
-
-def main():
-    st.title("EDF EEG Absolute Power Analyzer")
-
     uploaded_file = st.file_uploader("Upload EDF file", type="edf")
 
     edf_path = None
@@ -22,8 +7,8 @@ def main():
             with tempfile.NamedTemporaryFile(delete=False, suffix=".edf") as tmp:
                 tmp.write(uploaded_file.getbuffer())
                 edf_path = tmp.name
-        except Exception as exc:  # pragma: no cover - UI feedback only
-            notice = f"Error reading uploaded file: {exc}"  # noqa: E501
+        except Exception as exc:
+            notice = f"Error reading uploaded file: {exc}"
 
     if edf_path is None and DEFAULT_EDF_PATH:
         edf_path = DEFAULT_EDF_PATH
@@ -34,8 +19,18 @@ def main():
         st.info(notice)
 
     if edf_path:
-        df = compute_absolute_power(edf_path)
-        st.dataframe(df)
+        try:
+            df = compute_absolute_power(edf_path)
+        finally:
+            # Only remove if it was a temp file
+            if uploaded_file is not None:
+                os.remove(edf_path)
+
+        df_display = df.copy()
+        for col in df_display.columns:
+            if df_display[col].dtype != "object":
+                df_display[col] = df_display[col].apply(lambda v: f"{v:.3e}")
+        st.dataframe(df_display)
 
         csv = df.to_csv(index=False).encode("utf-8")
         st.download_button(
@@ -53,6 +48,3 @@ def main():
             file_name="absolute_power.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
-
-if __name__ == "__main__":
-    main()
