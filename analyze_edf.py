@@ -1,5 +1,6 @@
 import argparse
 import os
+from pathlib import Path
 
 import mne
 import numpy as np
@@ -22,6 +23,9 @@ def compute_absolute_power(edf_path, output_dir="."):
     ----------
     edf_path : str or pathlib.Path
         Path to the EDF file to analyze.
+    output_dir : str or pathlib.Path, optional
+        Directory where ``absolute_power.csv`` and ``absolute_power.xlsx``
+        will be written. Defaults to the current working directory.
 
     Returns
     -------
@@ -33,13 +37,13 @@ def compute_absolute_power(edf_path, output_dir="."):
     Writes ``absolute_power.csv`` and ``absolute_power.xlsx`` to
     ``output_dir``.
     """
-
-    os.makedirs(output_dir, exist_ok=True)
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     raw = mne.io.read_raw_edf(edf_path, preload=True)
-    
+
     # Resample to 256 Hz if necessary
-    if raw.info['sfreq'] != 256:
+    if abs(raw.info['sfreq'] - 256) > 1e-6:
         raw.resample(256)
     sfreq = raw.info['sfreq']
 
@@ -47,7 +51,7 @@ def compute_absolute_power(edf_path, output_dir="."):
     ch_names = raw.ch_names
     print(f"Loaded EDF with {len(ch_names)} channels at {sfreq} Hz")
     print("Channels:", ch_names)
-    
+
     results = []
 
     for i, signal in enumerate(data):
@@ -60,22 +64,22 @@ def compute_absolute_power(edf_path, output_dir="."):
             nfft=512,
             scaling='density'
         )
-        
+
         band_powers = {}
         for band, (low, high) in BANDS.items():
             idx = np.logical_and(f >= low, f <= high)
             power = np.trapz(psd[idx], f[idx])  # µV²
             band_powers[band] = power
-        
+
         band_powers['Channel'] = ch_names[i]
         print(f"Processed channel: {ch_names[i]}, Band powers: {band_powers}")
         results.append(band_powers)
 
     df = pd.DataFrame(results)
     df = df[['Channel'] + list(BANDS.keys())]
-    
-    csv_path = os.path.join(output_dir, "absolute_power.csv")
-    xlsx_path = os.path.join(output_dir, "absolute_power.xlsx")
+
+    csv_path = out_dir / "absolute_power.csv"
+    xlsx_path = out_dir / "absolute_power.xlsx"
     df.to_csv(csv_path, index=False)
     df.to_excel(xlsx_path, index=False)
     return df
@@ -114,7 +118,6 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     output_dir = os.path.abspath(args.output_dir)
-    os.makedirs(output_dir, exist_ok=True)
     df = compute_absolute_power(args.edf_path, output_dir=output_dir)
     return df
 

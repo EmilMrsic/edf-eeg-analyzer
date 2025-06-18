@@ -20,3 +20,9 @@ def test_compute_absolute_power(tmp_path):
     assert not df.empty
     expected_cols = ["Channel", "Delta", "Theta", "Alpha", "Beta", "Hi-Beta"]
     assert list(df.columns) == expected_cols
+    csv_path = tmp_path / "absolute_power.csv"
+    xlsx_path = tmp_path / "absolute_power.xlsx"
+    assert csv_path.exists()
+    assert xlsx_path.exists()
+    csv_path.unlink()
+    xlsx_path.unlink()
