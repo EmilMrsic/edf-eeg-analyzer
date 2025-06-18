@@ -1,4 +1,5 @@
 import io
+import os
 import tempfile
 import streamlit as st
 from analyze_edf import compute_absolute_power
@@ -11,7 +12,11 @@ def main():
         with tempfile.NamedTemporaryFile(delete=False, suffix=".edf") as tmp:
             tmp.write(uploaded_file.getbuffer())
             tmp_path = tmp.name
-        df = compute_absolute_power(tmp_path)
+
+        try:
+            df = compute_absolute_power(tmp_path)
+        finally:
+            os.remove(tmp_path)
 
         df_display = df.copy()
         for col in df_display.columns:
