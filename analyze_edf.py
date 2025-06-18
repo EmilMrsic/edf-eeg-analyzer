@@ -44,7 +44,7 @@ def compute_absolute_power(edf_path, output_dir="."):
     raw = mne.io.read_raw_edf(edf_path, preload=True)
     
     # Resample to 256 Hz if necessary
-    if raw.info['sfreq'] != 256:
+    if abs(raw.info['sfreq'] - 256) > 1e-6:
         raw.resample(256)
     sfreq = raw.info['sfreq']
 
