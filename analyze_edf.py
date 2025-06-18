@@ -15,7 +15,7 @@ BANDS = {
     'Hi-Beta': (20, 30),
 }
 
-def compute_absolute_power(edf_path):
+def compute_absolute_power(edf_path, output_dir="."):
     """Return per-channel absolute power for an EDF recording.
 
     Parameters
@@ -30,9 +30,11 @@ def compute_absolute_power(edf_path):
 
     Notes
     -----
-    Writes ``absolute_power.csv`` and ``absolute_power.xlsx`` to the
-    current working directory.
+    Writes ``absolute_power.csv`` and ``absolute_power.xlsx`` to
+    ``output_dir``.
     """
+
+    os.makedirs(output_dir, exist_ok=True)
 
     raw = mne.io.read_raw_edf(edf_path, preload=True)
     
@@ -72,8 +74,10 @@ def compute_absolute_power(edf_path):
     df = pd.DataFrame(results)
     df = df[['Channel'] + list(BANDS.keys())]
     
-    df.to_csv("absolute_power.csv", index=False)
-    df.to_excel("absolute_power.xlsx", index=False)
+    csv_path = os.path.join(output_dir, "absolute_power.csv")
+    xlsx_path = os.path.join(output_dir, "absolute_power.xlsx")
+    df.to_csv(csv_path, index=False)
+    df.to_excel(xlsx_path, index=False)
     return df
 
 
@@ -111,12 +115,7 @@ def main(argv=None):
 
     output_dir = os.path.abspath(args.output_dir)
     os.makedirs(output_dir, exist_ok=True)
-    cwd = os.getcwd()
-    try:
-        os.chdir(output_dir)
-        df = compute_absolute_power(args.edf_path)
-    finally:
-        os.chdir(cwd)
+    df = compute_absolute_power(args.edf_path, output_dir=output_dir)
     return df
 
 

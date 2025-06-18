@@ -16,7 +16,7 @@ def _decode_sample_edf(tmp_path: Path) -> Path:
 
 def test_compute_absolute_power(tmp_path):
     edf_path = _decode_sample_edf(tmp_path)
-    df = compute_absolute_power(edf_path)
+    df = compute_absolute_power(edf_path, output_dir=tmp_path)
     assert not df.empty
     expected_cols = ["Channel", "Delta", "Theta", "Alpha", "Beta", "Hi-Beta"]
     assert list(df.columns) == expected_cols

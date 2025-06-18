@@ -12,5 +12,5 @@ def test_compute_absolute_power_columns(tmp_path):
     edf_path = tmp_path / "dummy.edf"
     mne.export.export_raw(raw, edf_path, fmt="edf")
 
-    df = compute_absolute_power(str(edf_path))
+    df = compute_absolute_power(str(edf_path), output_dir=tmp_path)
     assert list(df.columns) == ["Channel"] + list(BANDS.keys())
