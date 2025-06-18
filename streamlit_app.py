@@ -12,11 +12,17 @@ def main():
         with tempfile.NamedTemporaryFile(delete=False, suffix=".edf") as tmp:
             tmp.write(uploaded_file.getbuffer())
             tmp_path = tmp.name
+
         try:
             df = compute_absolute_power(tmp_path)
         finally:
             os.remove(tmp_path)
-        st.dataframe(df)
+
+        df_display = df.copy()
+        for col in df_display.columns:
+            if df_display[col].dtype != "object":
+                df_display[col] = df_display[col].apply(lambda v: f"{v:.3e}")
+        st.dataframe(df_display)
 
         csv = df.to_csv(index=False).encode("utf-8")
         st.download_button("Download CSV", data=csv, file_name="absolute_power.csv", mime="text/csv")
